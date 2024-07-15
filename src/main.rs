@@ -5,10 +5,18 @@ struct Counter {
     value: i64,
 }
 
+use std::fmt;
+impl fmt::Display for Counter {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Counter(value={})", self.value)
+    }
+}
+
 #[derive(Debug, Clone, Copy)]
 enum Message {
     Increment,
     Decrement,
+    Reset,
 }
 
 impl Counter {
@@ -16,6 +24,7 @@ impl Counter {
         match message {
             Message::Increment => self.value += 1,
             Message::Decrement => self.value -= 1,
+            Message::Reset => self.value = 0,
         }
     }
 
@@ -24,6 +33,7 @@ impl Counter {
             button("+").on_press(Message::Increment),
             text(self.value),
             button("-").on_press(Message::Decrement),
+            button("Reset").on_press(Message::Reset),
         ]
         .padding(32)
     }
