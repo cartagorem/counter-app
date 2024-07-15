@@ -1,4 +1,5 @@
-use iced::widget::{button, column, text, Column};
+use iced::widget::{button, column, text};
+use iced::{Element, Sandbox, Settings};
 
 #[derive(Debug, Default)]
 struct Counter {
@@ -19,7 +20,16 @@ enum Message {
     Reset,
 }
 
-impl Counter {
+impl Sandbox for Counter {
+    type Message = Message;
+
+    fn new() -> Self {
+        Counter::default()
+    }
+
+    fn title(&self) -> String {
+        String::from("Counter App")
+    }
     fn update(&mut self, message: Message) {
         match message {
             Message::Increment => self.value += 1,
@@ -28,17 +38,18 @@ impl Counter {
         }
     }
 
-    fn view(&self) -> Column<'_, Message> {
+    fn view(&self) -> Element<'_, Self::Message> {
         column![
             button("+").on_press(Message::Increment),
-            text(self.value),
+            text(self.value).size(20),
             button("-").on_press(Message::Decrement),
             button("Reset").on_press(Message::Reset),
         ]
         .padding(32)
+        .into()
     }
 }
 
-fn main() -> Result<(), iced::Error> {
-    iced::run("Counter App", Counter::update, Counter::view)
+fn main() -> iced::Result {
+    Counter::run(Settings::default())
 }
